@@ -1,0 +1,3 @@
+setuptools
+tls-client
+undetected-chromedriver
