@@ -202,6 +202,30 @@ class Stake:
 
         return response
     
+    def get_user_meta(self, signup_code: bool = True) -> dict:
+        if self.api_key == None:
+            raise StakePyError("APIキーの指定が必要です")
+
+        response = self.session.post(
+            "https://stake.com/_api/graphql",
+            headers={
+                "Content-Type": "application/json",
+                "User-Agent": self.user_agent,
+                "X-Access-Token": self.api_key
+            },
+            json={
+                "query": "query UserMeta($name: String, $signupCode: Boolean = false) {\n  user(name: $name) {\n    id\n    name\n    isMuted\n    isRainproof\n    isBanned\n    createdAt\n    campaignSet\n    selfExclude {\n      id\n      status\n      active\n      createdAt\n      expireAt\n    }\n    signupCode @include(if: $signupCode) {\n      id\n      code {\n        id\n        code\n      }\n    }\n  }\n}\n",
+                "variables": {
+                    "signupCode": signup_code
+                }
+            },
+            cookies={
+                "cf_clearance": self.cf_clearance
+            }
+        ).json()
+
+        return response
+    
     def get_email_meta(self) -> dict:
         if self.api_key == None:
             raise StakePyError("APIキーの指定が必要です")
