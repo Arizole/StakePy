@@ -1,3 +1,2 @@
 setuptools
 tls_client
-undetected_chromedriver

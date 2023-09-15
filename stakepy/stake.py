@@ -1,12 +1,11 @@
 import time
 import tls_client
-import undetected_chromedriver
 
 class StakePyError(Exception):
     pass
 
 class Stake:
-    def __init__(self, api_key: str, user_agent: str = None, cf_clearance: str = None) -> None:
+    def __init__(self, api_key: str, user_agent: str, cf_clearance: str) -> None:
         self.api_key = api_key
         self.user_agent = user_agent
         self.cf_clearance = cf_clearance
@@ -15,22 +14,6 @@ class Stake:
             client_identifier="chrome_108",
             random_tls_extension_order=True
         )
-
-    def get_clearance(self) -> bool:
-        driver = undetected_chromedriver.Chrome(headless=True, use_subprocess=True)
-        driver.get("https://stake.com")
-        time.sleep(10)
-        clearance = driver.get_cookie("cf_clearance")
-        try:
-            self.cf_clearance = clearance.get("value")
-        except:
-            pass
-        self.user_agent = driver.execute_script("return navigator.userAgent;")
-        driver.close()
-        if self.cf_clearance == None:
-            return False
-        else:
-            return True
 
     def get_convert_rate(self) -> dict:
         if self.api_key == None:
